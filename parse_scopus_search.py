@@ -24,7 +24,10 @@ class ParseScopusSearch:
         response = requests.put(url, headers=headers, data=data)
         response_dict = json.loads(response.text)
         print(response)
-        return response_dict
+        if response.status_code==200:
+            return response_dict
+        else:
+            return None
 
 
     def get_breaks(self, content, length):
@@ -286,17 +289,18 @@ class ParseScopusSearch:
         offset = 0
         str_offset = str(offset)
         results = []
-        for i in range(43):
-            data = '{\n  "qs": "\\"COVID-19\\" OR \\"ncov\\" AND 2020",\n "display": {\n      "offset": ' + str_offset + ',\n      "show": 100,\n      "sortBy": "date"\n  }\n}'
+        for i in range(51):
+            data = '{\n  "qs": "(\\"COVID-19\\" OR \\"ncov\\") AND 2020",\n "display": {\n      "offset": ' + str_offset + ',\n      "show": 100,\n      "sortBy": "date"\n  }\n}'
             # data = '{\n  "qs": "\\"COVID-19\\" OR \\"ncov\\" AND 2020",\n "display": {\n      "'+str_offset+'": 100,\n      "show": 100,\n      "sortBy": "date"\n  }\n}'
             print(data)
             res = pss.send_request(pss.sciencedirect, pss.headers, data)
-            results.append(res['results'])
+            if res!=None:
+                results.append(res['results'])
             time.sleep(1)
             offset += 100
             str_offset = str(offset)
         df = self.convert_to_df(results)
-        name = 'scopus_updated_2'
+        name = 'scopus_updated_3'
         utils.write_to_csv(df, os.path.join(path, name + '.csv'))
 
 
@@ -304,10 +308,10 @@ class ParseScopusSearch:
 if __name__ == '__main__':
     pss=ParseScopusSearch()
     utils=Utils(path=path)
-    # pss.extract_covid_from_scopus()
+    pss.extract_covid_from_scopus()
 
-    res_journals = pss.iterate_journals()
-    res_journals = pss.handle_special_journals(res_journals)
-    utils.save_obj(res_journals,"journals_data_apr")
+    # res_journals = pss.iterate_journals()
+    # res_journals = pss.handle_special_journals(res_journals)
+    # utils.save_obj(res_journals,"journals_data_apr")
     exit(0)
 

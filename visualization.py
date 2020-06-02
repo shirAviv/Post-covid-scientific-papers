@@ -135,7 +135,7 @@ class Visualization():
         triweek=[]
         month_plus=[]
         for k, item in data_dict.items():
-            totals.append(item['Total'])
+            totals.append(item['Total_days'])
             week.append(item['acc_speed']['week'])
             fortnight.append(item['acc_speed']['fortnight'])
             triweek.append(item['acc_speed']['triweek'])
@@ -168,7 +168,7 @@ if __name__ == '__main__':
     medrxiv_data=[[0,0,0,2,120,533,1265],[162,201,170,226,433,805,1667],[0,0,0,0.008849558,0.277136259,0.662111801,0.75884823]]
     bioarxiv_data=[[0,0,0,12,54,138,348],[3111,2801,2636,2945,3248,3584,4230],[0,0,0, 0.004074703,0.016625616, 0.038504464,0.082269504]]
     arxiv_data=[[0,0,0,1,24,126,245],[295,347,300,206, 272,358,492],[0,0,0,0, 0.069970845, 0.318987342, 0.690031153]]
-    scopus_data=[[0,0,0,19,187,684,2906]]
+    scopus_data=[[0,0,0,15,166,742,2442]]
     world_infectious_statistics=[[0,0.001,0.266,9.826,85.403,750.890,3090.445]]
 
     vis.plt_by_month(medrxiv_data,bioarxiv_data,arxiv_data, scopus_data, world_infectious_statistics)
