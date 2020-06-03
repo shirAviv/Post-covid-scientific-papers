@@ -3,11 +3,11 @@ import json
 import pandas as pd
 import os
 import time
-from Bio import Entrez
+from bio import Entrez
 from utils import Utils
 import pickle
 import pandas as pd
-from Bio import Entrez
+from bio import Entrez
 import numpy as np
 from datetime import date,datetime,timedelta
 
@@ -118,6 +118,14 @@ class ParseScopusCsv:
         print("papers in May {}".format(len(papers_May)))
         paper_May_articles=papers_May.loc[(papers_May['Document_Type'] == 'Article') | (papers_May['Document_Type'] == 'Review')]
         print('articles and reviews Jan {}, Feb {}, Mar {}, Apr {}, May {}'.format(len(paper_Jan_articles),len(paper_Feb_articles),len(paper_Mar_articles), len(paper_Apr_articles), len(paper_May_articles)))
+        return papers_Jan, papers_Feb, papers_Mar, papers_Apr, papers_May
+
+    def get_publication_data(self,month,papers):
+        sorted_papers=papers.sort_values(by='Source_title')
+        # papers['publication_freq']=papers.groupby('Source_title')['Source_title'].transform('count')
+        publications_counts=papers['Source_title'].value_counts()
+        print(publications_counts)
+
 
 
 
@@ -129,7 +137,10 @@ if __name__ == '__main__':
     # a=utils.load_obj("scopus_data_6000")
     # b=utils.load_obj("scopus_data_4000")
     papers=utils.load_obj('scopus_data')
-    psc.split_by_month(papers)
+    pj,pf,pm,pa,pmy=psc.split_by_month(papers)
+    psc.get_publication_data('jan',pj)
+    psc.get_publication_data('feb',pf)
+
     # psc.join_and_save(a,b)
     exit(0)
     file='scopus_tmp.csv'

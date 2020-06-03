@@ -5,7 +5,7 @@ from elsapy.elsclient import ElsClient
 from elsapy.elsprofile import ElsAuthor, ElsAffil
 from elsapy.elsdoc import FullDoc, AbsDoc
 from elsapy.elssearch import ElsSearch
-from Bio import Entrez
+from bio import Entrez
 import json
 from visualization import Visualization
 

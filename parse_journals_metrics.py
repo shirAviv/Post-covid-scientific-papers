@@ -3,11 +3,11 @@ import json
 import pandas as pd
 import os
 import time
-from Bio import Entrez
+from bio import Entrez
 import pickle
 
 path='D:\\shir\\study\\covid_19\\scopus'
-class ParseJournals:
+class ParseJournalsMetrics:
 
     headers = {
         'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ class ParseJournals:
         return contents
 
 if __name__ == '__main__':
-    pj=ParseJournals()
+    pj=ParseJournalsMetrics()
     df=pj.iterate_journals()
     pj.write_to_csv(df,os.path.join(path,'journals_list_metrics.csv'))
     print(df)

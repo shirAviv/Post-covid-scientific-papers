@@ -4,7 +4,7 @@ from elsapy.elsdoc import FullDoc, AbsDoc
 from elsapy.elssearch import ElsSearch
 import json
 from utils import Utils
-from Bio import Entrez
+from bio import Entrez
 import pycountry
 from parse_authors_special import ParseSpecialAuthors
 import datetime

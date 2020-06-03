@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import os
 import time
-from Bio import Entrez
+from bio import Entrez
 from utils import Utils
 import pickle
 
