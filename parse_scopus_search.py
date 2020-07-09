@@ -7,6 +7,7 @@ from bio import Entrez
 from utils import Utils
 import pickle
 
+retmax=400
 path='D:\\shir\\study\\covid_19\\scopus'
 class ParseScopusSearch:
 
@@ -99,12 +100,14 @@ class ParseScopusSearch:
         Entrez.email='shirAviv@protonmail.com'
         handle = Entrez.esearch(db='pubmed',
                                 sort='date',
-                                retmax='200',
+                                retmax=retmax,
                                 retmode='xml',
                                 mindate=min_date,
                                 maxdate=max_date,
                                 term=query)
         results = Entrez.read(handle)
+        if int(results['Count']) > retmax:
+            print('more results for {} exist'.format(journal_name))
         return results
 
 

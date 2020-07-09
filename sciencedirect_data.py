@@ -86,22 +86,30 @@ class SciencedirectData:
                 if article_date.attributes['PubStatus'] == 'accepted':
                     date_accepted = date(int(article_date['Year']), int(article_date['Month']),
                                          int(article_date['Day']))
-            acceptance_time = date_accepted - date_received + timedelta(days=1)
+            # acceptance_time = date_accepted - date_received + timedelta(days=1)
         finally:
             try:
                 date_online = res['PubmedArticle'][0]['MedlineCitation']['Article']['ArticleDate'][0]
                 date_online = date(int(date_online['Year']), int(date_online['Month']), int(date_online['Day']))
             except:
                 date_online = date_accepted
+            if date_accepted==default_date and date_received!=default_date:
+                date_accepted=date_online
+            acceptance_time = date_accepted - date_received + timedelta(days=1)
             return date_received, date_accepted, date_online, acceptance_time
 
+    def join(self, papers1, papers2):
+        papers = pd.concat([papers1, papers2], ignore_index=True)
+        print(papers)
+        print(len(papers))
+        return papers
 
 if __name__ == '__main__':
     start_time = datetime.now()
     print(start_time)
     utils=Utils(path=path)
     pa=SciencedirectData()
-    papers=pa.get_data('Apr_art1.csv')
-    utils.write_to_csv(papers,os.path.join(path, 'Apr_articles_extended1' + '.csv'))
+    # papers=pa.get_data('Apr_art1.csv')
+    # utils.write_to_csv(papers,os.path.join(path, 'Apr_articles_extended' + '.csv'))
     end_time = datetime.now()
     print(end_time - start_time)

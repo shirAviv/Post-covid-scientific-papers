@@ -7,6 +7,8 @@ import math
 from tqdm import tqdm_notebook
 # %matplotlib inline
 from parse_scopus_search import ParseScopusSearch
+import csv
+import os
 
 class Visualization():
     def show_journals(self, df):
@@ -83,16 +85,16 @@ class Visualization():
             month_totals.append(total)
             month_covid.append(covid)
             month_in_press.append(articles_in_press)
-        labels = ['\n'.join(wrap(l, 10)) for l in labels]
+        labels = ['\n'.join(wrap(l, 25)) for l in labels]
         width = 0.35  # the width of the bars: can also be len(x) sequence
         y_pos=np.arange(len(labels))
-        plt.bar(y_pos,month_totals, 0.2, align='center', color='red', label='total publications')
-        plt.bar(y_pos, month_in_press, 0.2, align='center', color='green', label='articles in press')
-        plt.bar(y_pos,month_covid, 0.2, align='center', color='blue', label='covid-19 related publications')
+        plt.barh(y_pos,month_totals, 0.3, align='center', color='red', label='total publications')
+        plt.barh(y_pos, month_in_press, 0.3, align='center', color='green', label='articles in press')
+        plt.barh(y_pos,month_covid, 0.3, align='center', color='blue', label='covid-19 related publications')
         # plt.bar(y_pos+0.2, month_covid, 0.2, align='center', color='blue', label='covid-19 related publications')
 
-        plt.xticks(y_pos,labels, rotation=90)
-        plt.ylabel('# of publications')
+        plt.yticks(y_pos,labels, rotation=0, fontsize=8)
+        plt.xlabel('# of publications')
         # plt.barh(y_pos,month_totals, 0.30, color='red', label='total publication')
         # plt.barh(y_pos,month_covid, 0.30, alpha=0.5, color='blue', label='covid-19 related publications')
         plt.legend()
@@ -157,8 +159,15 @@ class Visualization():
 if __name__ == '__main__':
     vis=Visualization()
     pss=ParseScopusSearch()
-    utils=Utils(path='D:\\shir\\study\\covid_19\\scopus')
+    scopus_path = 'D:\\shir\\study\\covid_19\\scopus'
+    utils=Utils(path=scopus_path)
     obj=utils.load_obj('journals_data_apr')
+    name='journals_data_inc_apr.csv'
+    file_path = os.path.join(scopus_path, name)
+    with open(file_path, 'w') as f:  # Just use 'w' mode in 3.x
+        w = csv.DictWriter(f, obj.keys())
+        w.writeheader()
+        w.writerow(obj)
     vis.plt_journals_by_month(obj,1,"January")
     vis.plt_journals_by_month(obj,2,"February")
     vis.plt_journals_by_month(obj,3,"March")
@@ -167,8 +176,8 @@ if __name__ == '__main__':
 
     medrxiv_data=[[0,0,0,2,120,533,1265],[162,201,170,226,433,805,1667],[0,0,0,0.008849558,0.277136259,0.662111801,0.75884823]]
     bioarxiv_data=[[0,0,0,12,54,138,348],[3111,2801,2636,2945,3248,3584,4230],[0,0,0, 0.004074703,0.016625616, 0.038504464,0.082269504]]
-    arxiv_data=[[0,0,0,1,24,126,245],[295,347,300,206, 272,358,492],[0,0,0,0, 0.069970845, 0.318987342, 0.690031153]]
+    arxiv_data=[[0,0,0,1,24,126,245],[265,298,240,206, 272,358,492],[0,0,0,0, 0.088235294, 0.351955307, 0.49796748]]
     scopus_data=[[0,0,0,19,187,684,2906]]
     world_infectious_statistics=[[0,0.001,0.266,9.826,85.403,750.890,3090.445]]
 
-    vis.plt_by_month(medrxiv_data,bioarxiv_data,arxiv_data, scopus_data, world_infectious_statistics)
+    # vis.plt_by_month(medrxiv_data,bioarxiv_data,arxiv_data, scopus_data, world_infectious_statistics)

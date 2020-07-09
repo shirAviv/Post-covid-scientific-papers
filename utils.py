@@ -6,6 +6,7 @@ from elsapy.elsdoc import FullDoc, AbsDoc
 from elsapy.elssearch import ElsSearch
 from bio import Entrez
 import json
+import pandas as pd
 from pybliometrics.scopus import ScopusSearch
 
 
@@ -21,6 +22,11 @@ class Utils():
         self.client = ElsClient(config['apikey'])
         self.client.inst_token = config['insttoken']
 
+    def load_csv_data_to_df(self,name):
+        obj_path = os.path.join(self.path, name)
+        papers = pd.read_csv(obj_path,keep_default_na=False)
+        return papers
+
     def save_obj(self,obj, name):
         obj_path = os.path.join(self.path, name)
         # str=pickle.dumps(obj)
@@ -33,7 +39,8 @@ class Utils():
             return pickle.load(f)
 
     def write_to_csv(self, df, name):
-        df.to_csv(name, index=False)
+        file_path = os.path.join(self.path, name)
+        df.to_csv(file_path, index=False)
 
     def read_from_csv(self,name):
         csv_path=os.path.join(self.path, name)

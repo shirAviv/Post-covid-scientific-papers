@@ -26,14 +26,15 @@ class ParseJournalsMetrics:
         return response_dict
 
     def iterate_journals(self):
-        journals = self.read_from_csv('Journals_list.csv').split('\n')
-        journals = journals[0:-1]
+        # journals = self.read_from_csv('Journals_list.csv').split('\n')
+        # journals = journals[0:-1]
+        journals=['Journal of Vascular Surgery','Tropical Medicine and International Health']
         dict_ = {'journal_name': [], 'SJR': [], 'SJR_year': [], 'SNIP': [], 'SNIP_year':[], 'CiteScore': [], 'CiteScore_year':[], 'url':[]}
 
         for idx, journal_name in enumerate(journals):
             # journal_name,value=journal.split(',')
-            if idx % (len(journals) // 10) == 0:
-                print(f'Processing index: {idx} of {len(journals)}')
+            # if idx % (len(journals) // 10) == 0:
+            #     print(f'Processing index: {idx} of {len(journals)}')
             dict_['journal_name'].append(journal_name)
             # dict_['count'].append(value)
             response_dict = self.send_request(pj.sciencedirect, pj.headers, data=journal_name)
@@ -95,5 +96,5 @@ class ParseJournalsMetrics:
 if __name__ == '__main__':
     pj=ParseJournalsMetrics()
     df=pj.iterate_journals()
-    pj.write_to_csv(df,os.path.join(path,'journals_list_metrics.csv'))
+    pj.write_to_csv(df,os.path.join(path,'journals_list_metrics_tmp.csv'))
     print(df)
