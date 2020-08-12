@@ -26,9 +26,9 @@ class ParseJournalsMetrics:
         return response_dict
 
     def iterate_journals(self):
-        # journals = self.read_from_csv('Journals_list.csv').split('\n')
-        # journals = journals[0:-1]
-        journals=['Journal of Vascular Surgery','Tropical Medicine and International Health']
+        journals = self.read_from_csv('Journals_list.csv').split('\n')
+        journals = journals[0:25]
+        # journals=['Journal of Vascular Surgery','Tropical Medicine and International Health']
         dict_ = {'journal_name': [], 'SJR': [], 'SJR_year': [], 'SNIP': [], 'SNIP_year':[], 'CiteScore': [], 'CiteScore_year':[], 'url':[]}
 
         for idx, journal_name in enumerate(journals):

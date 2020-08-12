@@ -8,13 +8,13 @@ from bio import Entrez
 import numpy as np
 from datetime import date,datetime,timedelta
 from parse_scopus_search import ParseScopusSearch
-from sciencedirect_data import SciencedirectData
+# from sciencedirect_data import SciencedirectData
 
 
 path='D:\\shir\\study\\covid_19\\scopus'
 
 
-class Test:
+class AcceptanceTime:
     def get_publication_data(self,month,papers):
 
         papers[['Acceptance_Time']] = papers.apply(
@@ -22,9 +22,15 @@ class Test:
 
         # sorted_papers=papers.sort_values(by='Pub_name')
         group_by_pub_name=papers.groupby(['Pub_name'])
-        stats=group_by_pub_name['Acceptance_Time'].agg([np.count_nonzero, np.mean,np.std,np.median])
+        stats=pd.DataFrame(columns=['Total_counts','count_nonzero','mean','std'])
+        stats['Total_counts']=group_by_pub_name['Acceptance_Time'].agg(np.count_nonzero)
+        stats['count_nonzero'] = group_by_pub_name['Acceptance_Time'].count()
+        stats['mean']= group_by_pub_name['Acceptance_Time'].mean()
+        stats['std']= group_by_pub_name['Acceptance_Time'].std()
+
+        # stats1=group_by_pub_name['Acceptance_Time'].agg([np.count_nonzero, np.mean,np.std,np.median])
         stats.reset_index(inplace=True)
-        stats=stats.sort_values(by='count_nonzero', ascending=False)[0:20]
+        stats=stats.sort_values(by='count_nonzero', ascending=False)[0:30]
         pd.set_option('display.max_columns', None)
         pd.set_option('display.width', None)
         print('stats for mon {} are {}'.format(month,stats))
@@ -48,15 +54,20 @@ class Test:
         return stats
 
     def get_metrics(self,journal,metrics):
-        data=metrics[metrics['journal_name']==journal]
-        SJR=float(data['SJR'])
-        CiteScore = float(data['CiteScore'])
-        SNIP = float(data['SNIP'])
+        try:
+            data=metrics[metrics['journal_name']==journal]
+            SJR=float(data['SJR'])
+            CiteScore = float(data['CiteScore'])
+            SNIP = float(data['SNIP'])
+        except:
+            SJR = 0
+            CiteScore = 0
+            SNIP = 0
         return SJR,CiteScore,SNIP
 
 
     def get_acceptance_time(self,accept_time):
-        if accept_time!=np.nan and accept_time!='':
+        if accept_time!='NaT' and accept_time!=np.nan and accept_time!='':
             days= int(accept_time.split(' ')[0])
             if days<0:
                 return np.nan
@@ -107,11 +118,12 @@ class Test:
 
 
     def extract_stats_by_month(self,month,month_str):
-        papers = test.load_data(month_str + '_articles_extended.csv')
+        papers = test.load_data(month_str + '_articles_acceptance.csv')
         # test.remove_dupes(papers)
         stats = self.get_publication_data(month, papers)
         stats = self.extract_and_apply_publicattion_metrics('journals_list_metrics.csv', stats)
-        curr_month_papers = test.get_journals_by_month(stats, month, 2019)
+        curr_month_papers=stats
+        # curr_month_papers = test.get_journals_by_month(stats, month, 2019)
         return curr_month_papers
 
 
@@ -119,9 +131,9 @@ if __name__ == '__main__':
     start_time = datetime.now()
     print(start_time)
     utils = Utils(path=path)
-    test = Test()
+    test = AcceptanceTime()
     pss = ParseScopusSearch()
-    scd = SciencedirectData()
+    # scd = SciencedirectData()
     full_stats=pd.DataFrame()
     # month=1
     # month_str='Jan'
@@ -136,7 +148,9 @@ if __name__ == '__main__':
     # month_str = 'Apr'
     # curr_month_papers4 = test.extract_stats_by_month(month, month_str)
     # full_stats = pd.concat([curr_month_papers1, curr_month_papers2, curr_month_papers3,curr_month_papers4], ignore_index=True)
-    stats=pd.DataFrame()
+    # utils.write_to_csv(full_stats, 'covid_acceptance_time.csv')
+
+    # stats=pd.DataFrame()
     year=2020
     # month = 1
     # month_str = 'Jan'
@@ -155,20 +169,19 @@ if __name__ == '__main__':
     # stats = stats.iloc[0:0]
     # stats['Pub_name'] = papers['Pub_name'].unique().copy()
     # curr_month_papers3 = test.get_journals_by_month(stats, month, 2020)
+
     month = 1
     month_str = 'Jan'
     stats=utils.load_csv_data_to_df('journals_history.csv')
-    # stats = stats.iloc[0:0]
-
 
     stats = test.get_journals_by_month(stats, month, 2020)
-    month=2
-    stats = test.get_journals_by_month(stats, month, 2020)
-    month = 3
-    stats = test.get_journals_by_month(stats, month, 2020)
-    month = 4
-    stats = test.get_journals_by_month(stats, month, 2020)
-    # full_stats = pd.concat([curr_month_papers1, curr_month_papers2, curr_month_papers3,curr_month_papers4], ignore_index=True)
+    # month=2
+    # stats = test.get_journals_by_month(stats, month, 2020)
+    # month = 3
+    # stats = test.get_journals_by_month(stats, month, 2020)
+    # month = 4
+    # stats = test.get_journals_by_month(stats, month, 2020)
 
-    utils.write_to_csv(stats, '2020_acceptance_time.csv')
+
+    # utils.write_to_csv(stats, '2020_acceptance_time.csv')
     print(full_stats)

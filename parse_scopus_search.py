@@ -293,7 +293,9 @@ class ParseScopusSearch:
         str_offset = str(offset)
         results = []
         for i in range(51):
-            data = '{\n  "qs": "(\\"COVID-19\\" OR \\"ncov\\") AND 2020",\n "display": {\n      "offset": ' + str_offset + ',\n      "show": 100,\n      "sortBy": "date"\n  }\n}'
+            data='{"qs":"The",  "pub": "The Lancet",  "loadedAfter": "2020-01-01T00:00:00Z"}'
+            # data = '{\n  "pub: \\"The Lancet Infectious Diseases\\" AND 2020",\n "display": {\n      "offset": ' + str_offset + ',\n      "show": 100,\n      "sortBy": "date"\n  }\n}'
+            # data = '{\n  "qs": "(\\"COVID-19\\" OR \\"ncov\\") AND 2020",\n "display": {\n      "offset": ' + str_offset + ',\n      "show": 100,\n      "sortBy": "date"\n  }\n}'
             # data = '{\n  "qs": "\\"COVID-19\\" OR \\"ncov\\" AND 2020",\n "display": {\n      "'+str_offset+'": 100,\n      "show": 100,\n      "sortBy": "date"\n  }\n}'
             print(data)
             res = pss.send_request(pss.sciencedirect, pss.headers, data)

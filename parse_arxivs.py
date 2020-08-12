@@ -5,6 +5,8 @@ from AuthorsAndCountries import AuthorsAndCountries
 import numpy as np
 from visualization import Visualization
 import arxiv
+import pandas as pd
+
 
 
 path='D:\\shir\\study\\covid_19\\'
@@ -130,8 +132,26 @@ class ParseArxivs:
 
     # def extract_by_doi(self,doi):
 
+    def get_longtitudal_num_papers_changes(self):
+        data = utils.load_csv_data_to_df('covid_counts_preprints.csv')
+        data.set_index('Venue', inplace=True)
+        data = data.apply(pd.to_numeric, errors='coerce')
+        data=data.T
+        data['world_stats']=data['world_stats']/1000
+        vis.plt_rxivs_cov_and_totals(data, "COVID-19 and Total publications, Pre-print servers")
+
+
+
 if __name__ == '__main__':
     pa=ParseArxivs()
+    utils=Utils(path=path)
+    vis=Visualization()
+
+
+
+    pa.get_longtitudal_num_papers_changes()
+    exit(0)
+
     results=pa.load_arxiv()
     arxiv=pa.split_arxiv_by_month(results)
     print('Apr arxiv {}'.format(len(arxiv['Apr'])))
@@ -141,7 +161,6 @@ if __name__ == '__main__':
 
     print(arxiv['Jan'])
 
-    utils=Utils(path=path)
     res= pa.load_data(os.path.join(path,'collection_json.json'))
     med,bio=pa.split_by_month(res)
     print('Apr med {}, bio {}'.format(len(med['Apr']),len(bio['Apr'])))

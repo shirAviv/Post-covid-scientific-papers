@@ -120,7 +120,7 @@ class ParseSpecialAuthors():
 
 
 
-    def get_countries(self,id, countries_dict, countries_rel, doi, countries_per_article_dict, unknown, countries_for_article, countries_by_num_authors):
+    def get_countries(self, id, countries_dict, countries_rel, doi, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors):
         response = requests.get('https://www.ncbi.nlm.nih.gov//entrez/eutils/efetch.fcgi?db=pmc&id='+id)
         xml_data = xmltodict.parse(response.text)
         try:
@@ -128,11 +128,11 @@ class ParseSpecialAuthors():
         except:
             print("from entrez missing part of article {}".format(id))
             unknown.append(doi)
-            return countries_dict, countries_rel, doi, countries_per_article_dict, unknown, countries_for_article, countries_by_num_authors
+            return countries_dict, countries_rel, doi, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors
         if not 'aff' in article_meta.keys():
             print("from entrez no aff for {}".format(id))
             unknown.append(doi)
-            return countries_dict, countries_rel, doi, countries_per_article_dict, unknown,countries_for_article, countries_by_num_authors
+            return countries_dict, countries_rel, doi, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors
         affiliations_=article_meta['aff']
         authors=xml_data['pmc-articleset']['article']['front']['article-meta']['contrib-group']
         num_authors=0
@@ -169,8 +169,8 @@ class ParseSpecialAuthors():
             if country_ not in countries_dict:
                 countries_dict[country_]=0
                 countries_rel[country_]=0
-            if country_ not in countries_per_article_dict:
-                countries_per_article_dict[country_] = 0
+            if country_ not in countries_by_num_articles_dict:
+                countries_by_num_articles_dict[country_] = 0
             # print("one country {}".format(country))
             countries_dict[country_]+=num_authors
             countries_rel[country_]+=1
@@ -182,7 +182,7 @@ class ParseSpecialAuthors():
             else:
                 countries_by_num_authors[max_num_authors-1].add(country_+str(doi))
             if not country_ in countries_for_article:
-                countries_per_article_dict[country_]+=1
+                countries_by_num_articles_dict[country_]+=1
                 countries_for_article.add(country_)
         else:
             # print("multi countries ")
@@ -195,8 +195,8 @@ class ParseSpecialAuthors():
                 if country_ not in countries_dict:
                     countries_dict[country_] = 0
                     countries_rel[country_] = 0
-                if country_ not in countries_per_article_dict:
-                    countries_per_article_dict[country_]=0
+                if country_ not in countries_by_num_articles_dict:
+                    countries_by_num_articles_dict[country_]=0
                 countries_dict[country_]+=val
                 countries_rel[country_]+=val/num_authors
                 if num_authors<max_num_authors:
@@ -207,13 +207,13 @@ class ParseSpecialAuthors():
                 else:
                     countries_by_num_authors[max_num_authors-1].add(country_+str(doi))
                 if not country_ in countries_for_article:
-                    countries_per_article_dict[country_]+=1
+                    countries_by_num_articles_dict[country_]+=1
             handled_current_article=True
         print("success from Entrez")
-        return countries_dict, countries_rel, doi, countries_per_article_dict, unknown, countries_for_article, countries_by_num_authors
+        return countries_dict, countries_rel, doi, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors
 
 
-    def get_data_by_doi(self, doi, countries_dict, countries_rel, countries_per_article_dict, unknown, countries_for_article, countries_by_num_authors ):
+    def get_data_by_doi(self, doi, countries_dict, countries_rel, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors):
             response=requests.get('https://api.elsevier.com/content/article/doi/'+doi+'?apiKey=fee04e1e02e2b7ed9d4991b87f29896f&httpAccept=text%2Fxml')
             response_dict = xmltodict.parse(response.text)
             try:
@@ -221,9 +221,9 @@ class ParseSpecialAuthors():
                     authors_group=response_dict['full-text-retrieval-response']['originalText']['xocs:doc']['xocs:serial-item']['article']['head']['ce:author-group']
                 except:
                     print("failed finding authors for doi {}".format(doi))
-                    countries_dict, countries_rel, countries_per_article_dict, unknown, countries_for_article, countries_by_num_authors=self.get_data_from_entrez(doi,countries_dict,countries_rel,countries_per_article_dict, unknown, countries_for_article, countries_by_num_authors)
+                    countries_dict, countries_rel, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors=self.get_data_from_entrez(doi, countries_dict, countries_rel, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors)
                     # unknown.append(doi)
-                    return countries_dict, countries_rel, countries_per_article_dict, unknown, countries_for_article, countries_by_num_authors
+                    return countries_dict, countries_rel, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors
                 affilations_dict = dict()
                 affilations=authors_group['ce:affiliation']
                 authors=authors_group['ce:author']
@@ -272,10 +272,10 @@ class ParseSpecialAuthors():
                         if country_ not in countries_dict:
                             countries_dict[country_] = 0
                             countries_rel[country_] = 0
-                        if country_ not in countries_per_article_dict:
-                            countries_per_article_dict[country_]=0
+                        if country_ not in countries_by_num_articles_dict:
+                            countries_by_num_articles_dict[country_]=0
                         if not country_ in countries_for_article:
-                            countries_per_article_dict[country_]+=1
+                            countries_by_num_articles_dict[country_]+=1
                             countries_for_article.add(country_)
                         countries_dict[country_] += count
                         countries_rel[country_] += count/num_authors
@@ -289,28 +289,32 @@ class ParseSpecialAuthors():
                 print('success for doi {}'.format(doi))
             except Exception:
                 print('excpetion occured for doi {}'.format(doi))
-                countries_dict, countries_rel, countries_per_article_dict, unknown, countries_for_article, countries_by_num_authors = self.get_data_from_entrez(doi, countries_dict, countries_rel,countries_per_article_dict, unknown, countries_for_article, countries_by_num_authors)
+                countries_dict, countries_rel, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors = self.get_data_from_entrez(doi, countries_dict, countries_rel, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors)
                 # unknown.append(doi)
-                return countries_dict, countries_rel,countries_per_article_dict, unknown, countries_for_article, countries_by_num_authors
+                return countries_dict, countries_rel, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors
 
-            return(countries_dict, countries_rel,countries_per_article_dict, unknown,countries_for_article, countries_by_num_authors)
+            return(countries_dict, countries_rel, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors)
 
-    def get_data_from_entrez(self,doi,countries_dict,countries_rel, countries_per_article_dict, unknown, countries_for_article, countries_by_num_authors):
+    def get_data_from_entrez(self, doi, countries_dict, countries_rel, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors):
         response = requests.get('https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids='+doi+'&format=json')
         response_dict = json.loads(response.text)
-        record=response_dict['records'][0]
-        if 'pmcid' in record.keys():
-            # print(doi)
-            pmcid=str(record['pmcid']).strip('PMC')
-            countries_dict, countries_rel, doi, countries_per_article_dict,  unknown, countries_for_article, countries_by_num_authors = self.get_countries(pmcid, countries_dict, countries_rel, doi, countries_per_article_dict, unknown, countries_for_article, countries_by_num_authors)
-            # print(countries_dict)
-            # print(countries_rel)
-            # print(response_dict['records'])
+        if 'records' in response_dict.keys() and len(response_dict['records']>0):
+            record=response_dict['records'][0]
+            if 'pmcid' in record.keys():
+                # print(doi)
+                pmcid=str(record['pmcid']).strip('PMC')
+                countries_dict, countries_rel, doi, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors = self.get_countries(pmcid, countries_dict, countries_rel, doi, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors)
+                # print(countries_dict)
+                # print(countries_rel)
+                # print(response_dict['records'])
+            else:
+                print("failed from entrez")
+                unknown.append(doi)
         else:
             print("failed from entrez")
             unknown.append(doi)
         time.sleep(1)
-        return(countries_dict, countries_rel, countries_per_article_dict, unknown,countries_for_article, countries_by_num_authors)
+        return(countries_dict, countries_rel, countries_by_num_articles_dict, unknown, countries_for_article, countries_by_num_authors)
 
 
     def check_get_country(self,country):
