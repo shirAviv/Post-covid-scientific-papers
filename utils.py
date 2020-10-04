@@ -38,9 +38,9 @@ class Utils():
         with open(obj_path + '.pkl', 'rb') as f:
             return pickle.load(f)
 
-    def write_to_csv(self, df, name):
+    def write_to_csv(self, df, name, index=False):
         file_path = os.path.join(self.path, name)
-        df.to_csv(file_path, index=False)
+        df.to_csv(file_path, index=index)
 
     def read_from_csv(self,name):
         csv_path=os.path.join(self.path, name)

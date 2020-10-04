@@ -137,7 +137,7 @@ class ParseArxivs:
         data.set_index('Venue', inplace=True)
         data = data.apply(pd.to_numeric, errors='coerce')
         data=data.T
-        data['world_stats']=data['world_stats']/1000
+        data['world_stats']=data['world_stats']/5000
         vis.plt_rxivs_cov_and_totals(data, "COVID-19 and Total publications, Pre-print servers")
 
 

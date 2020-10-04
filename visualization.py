@@ -170,7 +170,7 @@ class Visualization():
         plt.show()
 
 
-    def plt_journals_sums(self,df, cov_df, title):
+    def plt_journals_sums(self,df, cov_df, non_cov_df,title):
 
 
         fig, axs = plt.subplots(1,5,sharey=True, facecolor='w')
@@ -180,6 +180,7 @@ class Visualization():
         ax4=axs[3]
         ax5=axs[4]
         ax6 = ax5.twinx()
+        ax7 = ax5.twiny()
         ax1.set_ylim(0,900)
         ax6.set_ylim(0,600)
         ax1.set_xlim(-1,5)
@@ -189,11 +190,11 @@ class Visualization():
         ax5.set_xlim(24,29.4)
 
         br1 = range(len(df['Total']))
-        ax1.plot(br1, list(df['Total'].values), color='blue', label='Total publications')
-        ax2.plot(br1, list(df['Total'].values), color='blue', label='Total publications')
-        ax3.plot(br1, list(df['Total'].values), color='blue', label='Total publications')
-        ax4.plot(br1, list(df['Total'].values), color='blue', label='Total publications')
-        ax5.plot(br1, list(df['Total'].values), color='blue', label='Total publications')
+        ax1.plot(br1, list(df['Total'].values), color='magenta', label='Total publications')
+        ax2.plot(br1, list(df['Total'].values), color='magenta')
+        ax3.plot(br1, list(df['Total'].values), color='magenta')
+        ax4.plot(br1, list(df['Total'].values), color='magenta')
+        ax5.plot(br1, list(df['Total'].values), color='magenta')
 
 
         ax1.spines['right'].set_visible(False)
@@ -206,6 +207,9 @@ class Visualization():
         ax5.spines['right'].set_visible(False)
         ax5.spines['left'].set_visible(False)
         ax6.spines['left'].set_visible(False)
+        ax7.spines['left'].set_visible(False)
+
+
         ax1.yaxis.tick_left()
 
         ax1.tick_params(axis='y',color='white')
@@ -215,9 +219,8 @@ class Visualization():
         ax5.tick_params(axis='y',color='white')
 
         ax6.yaxis.tick_right()
-
-
         ax6.bar(br1, list(cov_df['Total'].values), width=0.1, color='green', label='COVID-19 publications')
+        ax7.plot(br1, list(non_cov_df['Total'].values), color='blue', label='Non COVID-19 publications')
 
         d = .005  # how big to make the diagonal lines in axes coordinates
         # arguments to pass plot, just so we don't keep repeating them
@@ -251,8 +254,9 @@ class Visualization():
 
 
         ax3.set_xlabel('First six months in 2016-2020')
-        ax1.set_ylabel('Total publication counts', color='b')
-        ax6.set_ylabel('COVID-19 related publication counts', color='g')
+        ax1.set_ylabel('Total publication counts', color='magenta')
+        ax6.set_ylabel('COVID-19 and non COVID-19 related publication counts', color='g')
+
 
         # ax.set_xticks(df.index)
         ax1.set_xticklabels(list(df.T.keys()), rotation=70)
@@ -261,8 +265,9 @@ class Visualization():
         ax4.set_xticklabels(list(df.T.keys()), rotation=70)
         ax5.set_xticklabels(list(df.T.keys()), rotation=70)
         ax6.set_xticklabels(list(df.T.keys()), rotation=70)
+        ax7.set_xticklabels([])
         ax3.set_title(title, color='black')
-
+        fig.legend(loc=(0.08, 0.85), borderaxespad=0.1)
         plt.show()
 
     def plt_rxivs_cov_and_totals_old(self,df, title):
@@ -310,7 +315,7 @@ class Visualization():
         # fig, ax1 = plt.subplots()
         # ax2 = ax1.twinx()
         ax1.set_ylim(0,5000)
-        ax6.set_ylim(0,12000)
+        ax6.set_ylim(0,2500)
 
         ax1.set_xlim(0, 5)
         ax2.set_xlim(6, 11)
@@ -346,7 +351,7 @@ class Visualization():
 
         ax6.bar(br1,list(df['arxiv_cov'].values), width=0.1, color='magenta', label='COVID-19 publications arxiv')
 
-        ax6.bar(br4,list(df['world_stats'].values), width=0.1, color='red', label='confirmed virus infections worldwide, factor of 1/1000 ')
+        ax6.bar(br4,list(df['world_stats'].values), width=0.1, color='red', label='confirmed virus infections worldwide, factor of 1/5000 ')
 
         ax1.spines['right'].set_visible(False)
         ax2.spines['right'].set_visible(False)
@@ -588,19 +593,19 @@ class Visualization():
         month_covid_jun = list(df['2020-06_COVID'])
         month_non_covid_jun = list(df['2020-06_Non_COVID'])
         y_pos = np.arange(len(labels))
-        plt.barh(y_pos + 0.3, history, height=0.07, align='center', color='magenta', label='Average 2016-2020')
-        plt.barh(y_pos + 0.2, month_non_covid_jan, height=0.07, align='center', color='green', label='Non COVID')
-        plt.barh(y_pos + 0.2, month_covid_jan, height=0.07, align='center', color='blue', label='COVID')
-        plt.barh(y_pos + 0.1, month_non_covid_feb, height=0.07, align='center', color='green')
-        plt.barh(y_pos + 0.1, month_covid_feb, height=0.07, align='center', color='blue')
-        plt.barh(y_pos, month_non_covid_mar, height=0.07, align='center', color='green')
-        plt.barh(y_pos, month_covid_mar, height=0.07, align='center', color='blue')
-        plt.barh(y_pos - 0.1, month_non_covid_apr, height=0.07, align='center', color='green')
-        plt.barh(y_pos - 0.1, month_covid_apr, height=0.07, align='center', color='blue')
-        plt.barh(y_pos - 0.2, month_non_covid_may, height=0.07, align='center', color='green')
-        plt.barh(y_pos - 0.2, month_covid_may, height=0.07, align='center', color='blue')
-        plt.barh(y_pos - 0.3, month_non_covid_jun, height=0.07, align='center', color='green')
-        plt.barh(y_pos - 0.3, month_covid_jun, height=0.07, align='center', color='blue')
+        plt.barh(y_pos + 0.3, history, height=0.07, align='center', color='magenta', label='Average 2016-2019')
+        plt.barh(y_pos + 0.2, month_non_covid_jan, height=0.07, align='center', color='blue', label='Non COVID')
+        plt.barh(y_pos + 0.2, month_covid_jan, height=0.07, align='center', color='green', label='COVID')
+        plt.barh(y_pos + 0.1, month_non_covid_feb, height=0.07, align='center', color='blue')
+        plt.barh(y_pos + 0.1, month_covid_feb, height=0.07, align='center', color='green')
+        plt.barh(y_pos, month_non_covid_mar, height=0.07, align='center', color='blue')
+        plt.barh(y_pos, month_covid_mar, height=0.07, align='center', color='green')
+        plt.barh(y_pos - 0.1, month_non_covid_apr, height=0.07, align='center', color='blue')
+        plt.barh(y_pos - 0.1, month_covid_apr, height=0.07, align='center', color='green')
+        plt.barh(y_pos - 0.2, month_non_covid_may, height=0.07, align='center', color='blue')
+        plt.barh(y_pos - 0.2, month_covid_may, height=0.07, align='center', color='green')
+        plt.barh(y_pos - 0.3, month_non_covid_jun, height=0.07, align='center', color='blue')
+        plt.barh(y_pos - 0.3, month_covid_jun, height=0.07, align='center', color='green')
         # plt.bar(y_pos+0.2, month_covid, 0.2, align='center', color='blue', label='covid-19 related publications')
 
         plt.yticks(y_pos, labels, rotation=0, fontsize=8)
@@ -663,6 +668,228 @@ class Visualization():
         plt.title(title)
         plt.show()
 
+    def plt_countries_totals_history(self, year_df):
+        xs,ys=year_df[1].values, year_df[0].values
+        plt.scatter(xs,ys)
+        idx=0
+        for x, y in zip(xs, ys):
+            label = "{} ({})".format(year_df[0].index[idx], year_df[0].values[idx])
+            xy_coord=(-5, 2)
+            if x==2016:
+                xy_coord=(5,1)
+                if idx==1 or idx==3:
+                    xy_coord = (5, -4)
+                if idx==4:
+                    xy_coord = (5, -10)
+                plt.annotate(label,  # this is the text
+                             (x, y),  # this is the point to label
+                             textcoords="offset points",  # how to position the text
+                             xytext=xy_coord,  # distance from text to points (x,y)
+                             ha='left',
+                             fontsize=8)  # horizontal alignment can be left, right or center
+            else:
+                if (x == 2017 or x==2018 or x==2019) and idx==4:
+                        xy_coord = (-5, -3)
+                plt.annotate(label,  # this is the text
+                         (x, y),  # this is the point to label
+                         textcoords="offset points",  # how to position the text
+                         xytext=xy_coord,  # distance from text to points (x,y)
+                         ha='right',
+                         fontsize=8 )  # horizontal alignment can be left, right or center
+            idx+=1
+        # plt.xticks([2016,2017,2018,2019,2020,2022])
+        plt.gca().set_xticklabels(['','2016', '2017', '2018', '2019', '2020-cov', '2020-non-cov'])
+        plt.ylabel('Average number of articles (over six months)')
+        # plt.show()
+
+
+    def plt_countries_collab_diversity_history(self, year_df):
+
+        xs,ys=year_df['year'].values, year_df['num_collaborating_countries'].values
+        plt.scatter(xs,ys)
+        idx=0
+        for x, y in zip(xs, ys):
+            label = "{} ({})".format(year_df['country'].values[idx],year_df['num_collaborating_countries'].values[idx])
+            xy_coord=(-5, 2)
+            if x==2016:
+                xy_coord=(5,1)
+                if idx==3:
+                    xy_coord = (5, -4)
+                if idx==4:
+                    xy_coord = (5, -10)
+                plt.annotate(label,  # this is the text
+                             (x, y),  # this is the point to label
+                             textcoords="offset points",  # how to position the text
+                             xytext=xy_coord,  # distance from text to points (x,y)
+                             ha='left',
+                             fontsize=8)  # horizontal alignment can be left, right or center
+            else:
+                if (x==2018 or x==2019 or x==2020) and idx==4:
+                        xy_coord = (-5, -4)
+                if x==2019 and idx==1:
+                    xy_coord = (-5, -2)
+                # if x==2020 and idx==3:
+                #     xy_coord = (-5, -2)
+                if x==2020 and idx==1:
+                    xy_coord = (-5, -2)
+                plt.annotate(label,  # this is the text
+                         (x, y),  # this is the point to label
+                         textcoords="offset points",  # how to position the text
+                         xytext=xy_coord,  # distance from text to points (x,y)
+                         ha='right',
+                         fontsize=8 )  # horizontal alignment can be left, right or center
+            idx+=1
+        plt.xticks([2016,2017,2018,2019,2020,2021])
+        plt.gca().set_xticklabels(['2016', '2017', '2018', '2019', '2020-cov', '2020-non-cov'])
+        plt.ylabel('Number of collaborating countries')
+        # plt.show()
+
+    def plt_covid_countries_collab_diversity(self, month_df, color):
+        xs, ys = month_df['Month'].values, month_df['num_collaborating_countries'].values
+        plt.scatter(xs, ys, color=color)
+        idx = 0
+        prev_y=500
+        prev_y_coord=50
+        x_coord = -5
+        y_coord = 2
+        ha='right'
+        for x, y in zip(xs, ys):
+            label = "{} ({})".format(month_df['country'].values[idx], month_df['num_collaborating_countries'].values[idx])
+            if x==1:
+                x_coord=5
+                ha='left'
+            if x==5 and idx==2:
+                y_coord=-3
+            if prev_y-y<=3:
+                y_coord=prev_y_coord-3
+            if prev_y==y:
+                y_coord=prev_y_coord-6
+
+            xy_coord=(x_coord,y_coord)
+            plt.annotate(label,  # this is the text
+                         (x, y),  # this is the point to label
+                         textcoords="offset points",  # how to position the text
+                         xytext=xy_coord,  # distance from text to points (x,y)
+                         ha=ha,
+                         fontsize=8)  # horizontal alignment can be left, right or center
+            idx+=1
+            prev_y=y
+            prev_y_coord=y_coord
+        plt.gca().set_xticklabels(['','2020-01', '2020-02', '2020-03', '2020-04', '2020-05', '2020-06'], rotation=45)
+        plt.xlabel('First six months in 2020 ')
+        plt.ylabel('Number of collaborating countries')
+
+
+    def plt_countries_collab_num_papers_history(self, year_df):
+
+        xs,ys=year_df['year'].values, year_df['avg_num_papers'].values
+        plt.scatter(xs,ys)
+        idx=0
+        prev_y = 500
+        prev_y_coord = 50
+        x_coord = -5
+        y_coord = 2
+        ha = 'right'
+        for x, y in zip(xs, ys):
+            label = "{} ({})".format(year_df['country'].values[idx],year_df['num_collaborate_papers'].values[idx])
+            if x==2016:
+                x_coord = 5
+                ha = 'left'
+                # if idx==3:
+                #     xy_coord = (5, -4)
+                # if idx==4:
+                #     xy_coord = (5, -10)
+
+                # if (x==2018 or x==2019 or x==2020) and idx==4:
+                #         xy_coord = (-5, -4)
+                # if x==2019 and idx==1:
+                #     xy_coord = (-5, -2)
+                # # if x==2020 and idx==3:
+                # #     xy_coord = (-5, -2)
+                # if x==2020 and idx==1:
+                #     xy_coord = (-5, -2)
+            if prev_y-y<=3:
+                y_coord=prev_y_coord-3
+            if prev_y==y:
+                y_coord=prev_y_coord-6
+
+            xy_coord=(x_coord,y_coord)
+            plt.annotate(label,  # this is the text
+                    (x, y),  # this is the point to label
+                    textcoords="offset points",  # how to position the text
+                    xytext=xy_coord,  # distance from text to points (x,y)
+                    ha=ha,
+                    fontsize=8 )  # horizontal alignment can be left, right or center
+            prev_y = y
+            prev_y_coord = y_coord
+            idx+=1
+        plt.xticks([2016,2017,2018,2019,2020,2021])
+        plt.gca().set_xticklabels(['2016', '2017', '2018', '2019', '2020-cov', '2020-non-cov'])
+        plt.ylabel('collaboration papers percentage')
+        # plt.show()
+
+    def plt_covid_countries_collab_num_papers(self, month_df, color):
+        xs, ys = month_df['Month'].values, month_df['avg_num_papers'].values
+        plt.scatter(xs, ys, color=color)
+        idx = 0
+        prev_y=500
+        prev_y_coord=50
+        x_coord = -5
+        y_coord = 2
+        ha='right'
+        for x, y in zip(xs, ys):
+            label = "{} ({})".format(month_df['country'].values[idx],month_df['num_collaborate_papers'].values[idx])
+            if x==1:
+                x_coord=5
+                ha='left'
+            # if x==3 and idx==2 and color=='green':
+            #     plt.scatter(x,y+4, color=color)
+            #     y_coord=20
+            # if x==5 and idx==2 and color=='blue':
+            #     y_coord=-2
+            # if x==5 and idx==2 and color=='green':
+            #     plt.scatter(x,y+2, color=color)
+            #     y_coord=10
+
+
+            if prev_y-y<=3:
+                y_coord=prev_y_coord-3
+            if prev_y==y:
+                y_coord=prev_y_coord-6
+            # if x==5 and idx==4 and color=='green':
+            #     y_coord=-10
+            # if x == 3 and idx == 0 and color == 'green':
+            #     plt.scatter(x,y+1, color=color)
+            #     y_coord = 10
+            # if x == 3 and idx == 1 and color == 'green':
+            #     y_coord = -2
+
+            xy_coord=(x_coord,y_coord)
+            plt.annotate(label,  # this is the text
+                         (x, y),  # this is the point to label
+                         textcoords="offset points",  # how to position the text
+                         xytext=xy_coord,  # distance from text to points (x,y)
+                         ha=ha,
+                         fontsize=8)  # horizontal alignment can be left, right or center
+            idx+=1
+            prev_y=y
+            prev_y_coord=y_coord
+        plt.gca().set_xticklabels(['','2020-01', '2020-02', '2020-03', '2020-04', '2020-05', '2020-06'], rotation=45)
+        plt.xlabel('First six months in 2020 ')
+        plt.ylabel('Collaboration papers percentage')
+
+
+    def plt_scatter(self,df):
+        df.plot.scatter(x='SJR', y='sum_COVID')
+
+
+
+
+    def show(self, title, legend=None):
+        if legend:
+            plt.legend(legend)
+        plt.title(title)
+        plt.show()
 
     def plt_num_authors_by_month(self,month_name,med,bio, arxiv):
         y_pos=np.arange(15)
