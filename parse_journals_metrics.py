@@ -96,5 +96,5 @@ class ParseJournalsMetrics:
 if __name__ == '__main__':
     pj=ParseJournalsMetrics()
     df=pj.iterate_journals()
-    pj.write_to_csv(df,os.path.join(path,'journals_list_metrics_tmp.csv'))
+    pj.write_to_csv(df,os.path.join(path,'journals_list_metrics.csv'))
     print(df)
