@@ -444,6 +444,7 @@ class SciencedirectData:
                         if country not in countries_dict[str_year+'_non_COVID'].keys():
                             countries_dict[str_year+'_non_COVID'][country] = set()
                         countries_dict[str_year+'_non_COVID'][country].update(month_non_covid_dict[country].keys())
+
         collaborating_countries_df = pd.DataFrame.from_records(countries_dict)
         # collaborating_countries_df=collaborating_countries_df.T
         collaborating_countries_df['2016_count'] = collaborating_countries_df.apply(pd.Series(lambda row: len(row['2016'])-2), axis=1)
