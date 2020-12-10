@@ -19,6 +19,7 @@ from visualization import Visualization
 
 top_score_journals_names=['The Lancet', 'The Lancet Infectious Diseases', 'The Lancet Respiratory Medicine','The Lancet Global Health', 'The Lancet Public Health', 'Gastroenterology', 'Journal of the American Academy of Dermatology', 'Journal of Vascular Surgery' ]
 selected_journals_names=['The Lancet Infectious Diseases', 'The Lancet Respiratory Medicine', 'The Lancet Global Health', 'Journal of Hospital Infection','International Journal of Infectious Diseases', 'Travel Medicine and Infectious Disease', 'European Urology', 'Psychiatry Research', 'Medical Hypotheses']
+production_path=''
 
 def get_covid_growth(all_counts_sum):
     df = pd.DataFrame(
@@ -483,13 +484,13 @@ if __name__ == '__main__':
     #
     # exit()
     print(datetime.datetime.now())
-    utils=Utils(path='D:\\shir\\study\\covid_19\\scopus')
+    utils=Utils(path=production_path)
     aa=AcceptanceAnalysis()
     psc=ParseScopusCsv()
     scd = SciencedirectData()
     vis=Visualization()
-    month = 1
-    year=2020
+    # month = 1
+    # year=2020
     # get_longtitudal_num_papers_changes()
     get_longtitudal_avg_time_to_acceptance_changes()
     # get_COVID_avg_time_to_acceptance()
