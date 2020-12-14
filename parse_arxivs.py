@@ -132,8 +132,7 @@ class ParseArxivs:
 
     # def extract_by_doi(self,doi):
 
-    def get_longtitudal_num_papers_changes(self):
-        data = utils.load_csv_data_to_df('covid_counts_preprints.csv')
+    def get_longtitudal_num_papers_changes(self, data, vis):
         data.set_index('Venue', inplace=True)
         data = data.apply(pd.to_numeric, errors='coerce')
         data=data.T
@@ -148,8 +147,8 @@ if __name__ == '__main__':
     vis=Visualization()
 
 
-
-    pa.get_longtitudal_num_papers_changes()
+    data = utils.load_csv_data_to_df('covid_counts_preprints.csv')
+    pa.get_longtitudal_num_papers_changes(data,vis)
     exit(0)
 
     results=pa.load_arxiv()

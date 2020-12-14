@@ -762,7 +762,7 @@ class SciencedirectData:
         # text_file.close()
         return df_counts, df_counts_COVID
 
-    def get_history_counts(self, df):
+    def get_history_counts(self, df,vis):
         df_counts=df[df['pub_name'].str.match('.*_counts')].copy()
         df_counts.set_index('pub_name', inplace=True)
         df_counts.rename(index={0:'pub_name'}, inplace=True)
@@ -795,7 +795,7 @@ class SciencedirectData:
         vis.plt_journals_sums(all_counts_sums_history, covId_counts_sums, non_covId_counts_sums, "COVID-19 and Total publications, Scopus journals")
 
 
-    def get_acc_time(self,df):
+    def get_acc_time(self,df, vis):
         df_means = df[df['pub_name'].str.match('.*_mean')].copy()
         df_means.set_index('pub_name', inplace=True)
         df_means.rename(index={0: 'pub_name'}, inplace=True)
@@ -858,7 +858,7 @@ class SciencedirectData:
                                       'COVID-19, Non COVID-19 and Total publications average time to acceptance')
 
 
-    def get_acc_time_journals(self, df, utils):
+    def get_acc_time_journals(self, df, utils,vis):
         metrics = utils.load_csv_data_to_df('journals_list_metrics_tmp.csv')
         metrics['SJR'] = pd.to_numeric(metrics['SJR'], errors='coerce')
         metrics['CiteScore'] = pd.to_numeric(metrics['CiteScore'], errors='coerce')
@@ -891,8 +891,8 @@ class SciencedirectData:
 
 
         print(cov_non_cov_means)
-        # title = 'COVID-19 vs Non COVID-19 Average time to acceptance in selected journals, compared with 2016-2019'
-        # vis.plt_covid_by_non_covid_acc_time(cov_non_cov_means.T, df_means_avg, title)
+        title = 'COVID-19 vs Non COVID-19 Average time to acceptance in selected journals, compared with 2016-2019'
+        vis.plt_covid_by_non_covid_acc_time(cov_non_cov_means.T, df_means_avg, title)
         return df_means
 
 
@@ -964,7 +964,7 @@ class SciencedirectData:
         text_file.close()
         print(df_countries_totals_COVID)
 
-    def get_top_publishing_countries_history(self, countries_data_dict):
+    def get_top_publishing_countries_history(self, countries_data_dict, vis):
 
         for year in range(2016,2020):
             countries_dict = dict()
@@ -1020,9 +1020,9 @@ class SciencedirectData:
         # print(avgs_df)
         vis.plt_countries_totals_history(avgs_df)
 
-        vis.show('Top publishing countries')
+        vis.show('Top publishing countries', color='black', fontdict={'fontsize': 18})
 
-    def get_country_collab_diversity_history(self,countries_data_dict):
+    def get_country_collab_diversity_history(self,countries_data_dict,vis):
         for year in range(2016,2020):
             countries_dict = dict()
             data_dict = countries_data_dict[str(year)]
@@ -1075,9 +1075,9 @@ class SciencedirectData:
         vis.plt_countries_collab_diversity_history(collaborating_countries_df)
 
         print(collaborating_countries_df)
-        vis.show('Top collaborating countries')
+        vis.show('Top collaborating countries', color='black', fontdict={'fontsize': 18})
 
-    def get_countries_collab_covid(self,countries_data_dict):
+    def get_countries_collab_covid(self,countries_data_dict,vis):
         data_dict = countries_data_dict[str(2020)]
         for month_num in range(1, 7):
             month_covid_dict = data_dict[str(month_num) + '_COVID']
@@ -1105,9 +1105,9 @@ class SciencedirectData:
                                                          columns=('country', 'num_collaborating_countries')))[0:5]
             non_covid_collab_df['Month']=month_num
             vis.plt_covid_countries_collab_diversity(non_covid_collab_df, 'blue')
-        vis.show(title='Top collaborating countries at COVID-19 time', legend=('Green- COVID-19 related publications collaborations', 'Blue - all non COVID-19 related publications collaborations'))
+        vis.show(title='Top collaborating countries at COVID-19 time', legend=('Green- COVID-19 related publications collaborations', 'Blue - all non COVID-19 related publications collaborations'), color='black', fontdict={'fontsize': 18})
 
-    def get_collab_by_num_papers_history(self, countries_data_dict):
+    def get_collab_by_num_papers_history(self, countries_data_dict, vis):
         for year in range(2016, 2020):
             countries_dict = dict()
             data_dict = countries_data_dict[str(year)]
@@ -1168,9 +1168,9 @@ class SciencedirectData:
             lambda row: row['num_collaborate_papers'] / total_articles * 100, axis=1)
         non_covid_collab_df['year'] = year+2
         vis.plt_countries_collab_num_papers_history(non_covid_collab_df)
-        vis.show(title='Top collaborating countries by percentage of collaboration papers')
+        vis.show(title='Top collaborating countries by percentage of collaboration papers', color='black', fontdict={'fontsize': 18})
 
-    def get_collab_by_num_papers_covid(self, countries_data_dict):
+    def get_collab_by_num_papers_covid(self, countries_data_dict, vis):
         data_dict = countries_data_dict[str(2020)]
         for month_num in range(1, 7):
             month_covid_dict = data_dict[str(month_num) + '_COVID']
@@ -1206,7 +1206,7 @@ class SciencedirectData:
                 lambda row: row['num_collaborate_papers'] / total_articles_non_covid * 100, axis=1)
             non_covid_collab_df['Month'] = month_num
             vis.plt_covid_countries_collab_num_papers(non_covid_collab_df, 'blue')
-        vis.show(title='Top collaborating countries by percentage of collaboration papers at COVID-19 time', legend=('Green- COVID-19 related publications collaborations', 'Blue - all non COVID-19 related publications collaborations'))
+        vis.show(title='Top collaborating countries by number of collaboration papers at COVID-19 time', legend=('Green- COVID-19 related publications collaborations', 'Blue - all non COVID-19 related publications collaborations'), color='black', fontdict={'fontsize': 18})
 
     def merge_dict(self, countries_dict, countries_dict_covid_non_covid):
         countries_dict['2020']=countries_dict_covid_non_covid['2020']
@@ -1222,12 +1222,12 @@ if __name__ == '__main__':
     at=AcceptanceTime()
     vis=Visualization()
     countries_dict=utils.load_obj("countries_dict")
-    # sdd.get_countries_collab_covid(countries_dict)
-    # sdd.get_country_collab_diversity_history(countries_dict)
-    # sdd.get_top_publishing_countries_history(countries_dict)
-    sdd.get_top_publishing_countries_covid(countries_dict)
-    # sdd.get_collab_by_num_papers_covid(countries_dict)
-    # sdd.get_collab_by_num_papers_history(countries_dict)
+    # sdd.get_countries_collab_covid(countries_dict,vis)
+    # sdd.get_country_collab_diversity_history(countries_dict,vis)
+    # sdd.get_top_publishing_countries_history(countries_dict,vis)
+    # sdd.get_top_publishing_countries_covid(countries_dict)
+    # sdd.get_collab_by_num_papers_covid(countries_dict,vis)
+    sdd.get_collab_by_num_papers_history(countries_dict, vis)
     # countries_dict=sdd.extract_countries_data()
     # utils.save_obj(countries_dict,"countries_dict")
         # countries_dict=utils.load_obj("countries_dict")
@@ -1239,9 +1239,9 @@ if __name__ == '__main__':
     # df= sdd.get_journals_counts_by_year_and_month()
     # utils.write_to_csv(df, "journals_counts_mean.csv")
     df=utils.load_csv_data_to_df("journals_counts_mean.csv")
-    sdd.get_history_counts(df)
+    sdd.get_history_counts(df,vis)
     # sdd.create_counts_table(df,utils)
-    # sdd.get_acc_time_journals(df, utils)
+    sdd.get_acc_time_journals(df, utils,vis)
     exit(0)
     df = pd.DataFrame()
     name = 'Journal_of_Infection'

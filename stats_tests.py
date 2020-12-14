@@ -878,7 +878,7 @@ if __name__ == '__main__':
     st = StatsTests()
 
 
-    # st.run_acc_ttests()
+    st.run_acc_ttests()
     # st.get_and_store_countries_collab_df()
     # df = utils.load_obj('collab_countries_df')
     # df.drop(['2016', '2017', '2018', '2019', '2020', '2020_COVID', '2020_non_COVID'], axis=1)

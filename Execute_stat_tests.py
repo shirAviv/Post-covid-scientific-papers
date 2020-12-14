@@ -13,6 +13,7 @@ import itertools
 from analyse_acceptance import AcceptanceAnalysis
 from parse_scopus_csv import ParseScopusCsv
 from sciencedirect_data import SciencedirectData
+from parse_arxivs import ParseArxivs
 import numpy as np
 import imgkit
 from visualization import Visualization
@@ -20,6 +21,10 @@ from visualization import Visualization
 top_score_journals_names=['The Lancet', 'The Lancet Infectious Diseases', 'The Lancet Respiratory Medicine','The Lancet Global Health', 'The Lancet Public Health', 'Gastroenterology', 'Journal of the American Academy of Dermatology', 'Journal of Vascular Surgery' ]
 selected_journals_names=['The Lancet Infectious Diseases', 'The Lancet Respiratory Medicine', 'The Lancet Global Health', 'Journal of Hospital Infection','International Journal of Infectious Diseases', 'Travel Medicine and Infectious Disease', 'European Urology', 'Psychiatry Research', 'Medical Hypotheses']
 production_path=''
+# local_path='D:\\shir\\study\\covid_19'
+# local_path='D:\\shir\\study\\covid_19\\scopus'
+local_path='D:\\shir\\study\\covid_19\\scopus\scienceDirectData'
+
 
 def get_covid_growth(all_counts_sum):
     df = pd.DataFrame(
@@ -314,7 +319,7 @@ def get_COVID_avg_time_to_acceptance(all_acc_time_means_avg, avgs_for_journals_h
     selected_df=selected_df.iloc[::-1]
     avgs_for_journals_history=avgs_for_journals_history.iloc[::-1]
     title='Average time to acceptance in selected journals, in first four months of 2020 compared with 2016-2019'
-    vis.plt_covid_by_non_covid_acc_time_old(selected_df, avgs_for_journals_history, title)
+    # vis.plt_covid_by_non_covid_acc_time_old(selected_df, avgs_for_journals_history, title)
     print('done covid by non covid, now averages over months')
     df2=df2.replace(0,np.nan)
     df_avg=df2.mean()
@@ -415,14 +420,14 @@ def get_longtitudal_avg_time_to_acceptance_changes():
 
 
     title = 'Mean time to acceptance in years 2016-2020'
-    vis.plt_journals_counts(all_acc_time_means_avg, title)
+    # vis.plt_journals_counts(all_acc_time_means_avg, title)
 
     month_selected_journals_names = selected_journals_names
     month_selected_journals_names.insert(0, 'months')
     all_acc_time_means_selected = all_acc_time_means[month_selected_journals_names]
 
     title='Mean time to acceptance in years 2016-2020'
-    vis.plt_journals_counts(all_acc_time_means_selected, title)
+    # vis.plt_journals_counts(all_acc_time_means_selected, title)
 
 def get_longtitudal_num_papers_changes():
     papers_2020 = utils.load_csv_data_to_df('2020_acceptance_time.csv')
@@ -474,6 +479,41 @@ def get_longtitudal_num_papers_changes():
     vis.plt_journals_counts(top_score_journals, title)
 
 
+def get_journals_publication_growth_plot():
+    df = utils.load_csv_data_to_df("journals_counts_mean.csv")
+    scd.get_history_counts(df,vis)
+
+def get_arxivs_publication_growth_plot():
+    data = utils.load_csv_data_to_df('covid_counts_preprints.csv')
+    pa.get_longtitudal_num_papers_changes(data,vis)
+
+def get_avg_time_to_acc_journals():
+    df = utils.load_csv_data_to_df("journals_counts_mean.csv")
+    scd.get_acc_time_journals(df, utils,vis)
+
+def get_avg_time_to_acc_journals_history():
+    df = utils.load_csv_data_to_df("journals_counts_mean.csv")
+    scd.get_acc_time(df, vis)
+
+def get_top_publishing_countries_history():
+    countries_dict = utils.load_obj("countries_dict")
+    scd.get_top_publishing_countries_history(countries_dict,vis)
+
+def get_top_collab_countries_diversity():
+    countries_dict = utils.load_obj("countries_dict")
+    scd.get_countries_collab_covid(countries_dict,vis)
+
+def get_top_collab_countries_diversity_history():
+    countries_dict = utils.load_obj("countries_dict")
+    scd.get_country_collab_diversity_history(countries_dict,vis)
+
+def get_top_collab_countries_num_papers():
+    countries_dict = utils.load_obj("countries_dict")
+    scd.get_collab_by_num_papers_covid(countries_dict,vis)
+
+def get_top_collab_countries_num_papers_history():
+    countries_dict = utils.load_obj("countries_dict")
+    scd.get_collab_by_num_papers_history(countries_dict,vis)
 
 
 if __name__ == '__main__':
@@ -484,11 +524,21 @@ if __name__ == '__main__':
     #
     # exit()
     print(datetime.datetime.now())
-    utils=Utils(path=production_path)
+    utils=Utils(path=local_path)
     aa=AcceptanceAnalysis()
     psc=ParseScopusCsv()
     scd = SciencedirectData()
+    pa=ParseArxivs()
     vis=Visualization()
+    # get_arxivs_publication_growth_plot()
+    # get_journals_publication_growth_plot()
+    # get_avg_time_to_acc_journals()
+    # get_avg_time_to_acc_journals_history()
+    # get_top_collab_countries_diversity()
+    # get_top_collab_countries_diversity_history()
+    # get_top_collab_countries_num_papers()
+    get_top_collab_countries_num_papers_history()
+    exit(0)
     # month = 1
     # year=2020
     # get_longtitudal_num_papers_changes()
