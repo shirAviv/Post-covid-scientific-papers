@@ -532,7 +532,7 @@ if __name__ == '__main__':
     vis=Visualization()
     # get_arxivs_publication_growth_plot()
     # get_journals_publication_growth_plot()
-    # get_avg_time_to_acc_journals()
+    get_avg_time_to_acc_journals()
     # get_avg_time_to_acc_journals_history()
     # get_top_collab_countries_diversity()
     # get_top_collab_countries_diversity_history()

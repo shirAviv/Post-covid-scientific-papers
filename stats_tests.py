@@ -7,7 +7,7 @@ from utils import Utils
 import numpy as np
 import pandas as pd
 from scipy.stats import shapiro
-import math
+from sklearn.metrics import matthews_corrcoef
 path='D:\\shir\\study\\covid_19\\scopus\scienceDirectData'
 
 class StatsTests:
@@ -488,6 +488,7 @@ class StatsTests:
         current_df = df.loc[:, "2020_02_COVID":"2020_02_non_COVID"]
         current_df = current_df.T
         chi2, p, dof, expected = stats.chi2_contingency(current_df)
+        r,pValue=stats.pearsonr(current_df.T['2020_02_COVID'], current_df.T['2020_02_non_COVID'])
         print(current_df)
         print("Feb -COVID-19/Non COVID-19 chi2 {}, p {}".format(chi2, p))
 
@@ -506,6 +507,7 @@ class StatsTests:
         current_df = df.loc[:, "2020_05_COVID":"2020_05_non_COVID"]
         current_df = current_df.T
         chi2, p, dof, expected = stats.chi2_contingency(current_df)
+        r,pValue=stats.pearsonr(current_df.T['2020_05_COVID'], current_df.T['2020_05_non_COVID'])
         print(current_df)
         print("May -COVID-19/Non COVID-19 chi2 {}, p {}".format(chi2, p))
 
@@ -887,16 +889,17 @@ if __name__ == '__main__':
     # df = df.T
     # st.run_collab_countries_ttests(df)
 
+    df = utils.load_obj('collab_countries_by_num_papers_df')
+    df = df.replace(0, np.NaN)
+    df = df.T
+    st.run_collab_countries_by_num_papers_ttests(df)
+    exit(0)
 
-    # df = utils.load_obj('collab_countries_by_num_papers_df')
-    # df = df.replace(0, np.NaN)
-    # df = df.T
-    # st.run_collab_countries_by_num_papers_ttests(df)
 
     # st.get_and_store_single_vs_multi_country()
     df = utils.load_obj('single_vs_multi_country_df')
-    # df = df.replace(0, np.NaN)
-    # st.run_chi_single_vs_multi_country(df)
+    df = df.replace(0, np.NaN)
+    st.run_chi_single_vs_multi_country(df)
 
     # st.get_and_store_authors()
     # df = utils.load_obj('authors_df')

@@ -17,6 +17,10 @@ con_file.close()
 client = ElsClient(config['apikey'])
 client.inst_token = config['insttoken']
 
+str='SRCTITLE(IEEE Transactions on Pattern Analysis and Machine Intelligence) AND PUBYEAR > 2018 '
+myDocSearch=ElsSearch(str, 'scopus')
+myDocSearch.execute(client, get_all=False)
+myDocSearch.results
 
 pii_doc = FullDoc(sd_pii='0181551220301406')
 if pii_doc.read(client):
@@ -27,6 +31,11 @@ else:
 
 str='affil(Public Health and Infection Research Group, Faculty of Health Sciences)'
 myDocSearch=ElsSearch(str, 'affiliation')
+myDocSearch.execute(client, get_all=False)
+myDocSearch.results
+
+str='SRCTITLE(Artifical)'
+myDocSearch=ElsSearch(str, 'source')
 myDocSearch.execute(client, get_all=False)
 myDocSearch.results
 
