@@ -22,6 +22,7 @@ class AcceptanceTime:
 
         # sorted_papers=papers.sort_values(by='Pub_name')
         group_by_pub_name=papers.groupby(['Pub_name'])
+
         stats=pd.DataFrame(columns=['Total_counts','count_nonzero','mean','std'])
         stats['Total_counts']=group_by_pub_name['Acceptance_Time'].agg(np.count_nonzero)
         stats['count_nonzero'] = group_by_pub_name['Acceptance_Time'].count()
