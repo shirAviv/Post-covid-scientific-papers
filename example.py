@@ -5,7 +5,7 @@ from elsapy.elsprofile import ElsAuthor, ElsAffil
 from elsapy.elsdoc import FullDoc, AbsDoc
 from elsapy.elssearch import ElsSearch
 import json
-from bio import Entrez
+from Bio import Entrez
 
 
 ## Load configuration

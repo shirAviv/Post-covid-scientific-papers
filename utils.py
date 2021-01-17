@@ -4,7 +4,7 @@ from elsapy.elsclient import ElsClient
 from elsapy.elsprofile import ElsAuthor, ElsAffil
 from elsapy.elsdoc import FullDoc, AbsDoc
 from elsapy.elssearch import ElsSearch
-from bio import Entrez
+from Bio import Entrez
 import json
 import pandas as pd
 from pybliometrics.scopus import ScopusSearch

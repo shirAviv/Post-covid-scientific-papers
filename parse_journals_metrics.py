@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import os
 import time
-from bio import Entrez
+from Bio import Entrez
 import pickle
 
 path='D:\\shir\\study\\covid_19\\scopus'

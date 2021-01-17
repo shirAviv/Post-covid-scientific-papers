@@ -4,7 +4,7 @@ import numpy as np
 from textwrap import wrap
 from utils import Utils
 import math
-from tqdm import tqdm_notebook
+# from tqdm import tqdm_notebook
 # %matplotlib inline
 from parse_scopus_search import ParseScopusSearch
 import csv

@@ -9,7 +9,7 @@ import pycountry
 from visualization import Visualization
 
 
-from bio import Entrez
+from Bio import Entrez
 max_num_authors=25
 
 data1 = ['10.1016/j.visj.2020.100742', '10.1016/j.visj.2020.100760', '10.1016/S2352-3018(20)30079-5',

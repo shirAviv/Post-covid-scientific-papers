@@ -1,10 +1,10 @@
 import os
 import time
-from bio import Entrez
+from Bio import Entrez
 from utils import Utils
 import pickle
 import pandas as pd
-from bio import Entrez
+from Bio import Entrez
 import numpy as np
 from datetime import date,datetime,timedelta
 from parse_scopus_search import ParseScopusSearch
